@@ -1,0 +1,341 @@
+/*
+ * All selectors are namespaced with .gtc- so GCORES styles and this extension
+ * do not accidentally override one another.
+ */
+
+.gtc-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  overflow: visible;
+  /* GCORES flips direct children of the timeline track to pointer-events:auto
+     while playing. Keep the transparent layer pass-through anyway. */
+  pointer-events: none !important;
+}
+
+.gtc-layer--timeline {
+  top: 0;
+  height: 100%;
+  z-index: 12;
+}
+
+/* Sit above the chapter labels on the official strip, not across them. */
+.gtc-layer--timeline .gtc-marker {
+  top: 10px;
+}
+
+.gtc-marker {
+  position: absolute;
+  top: 50%;
+  width: 27px;
+  height: 27px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: auto !important;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gtc-marker__dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10.5px;
+  height: 10.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff8d6 0 16%, #ffd45e 46%, #f0a500 100%);
+  box-shadow:
+    0 0 0 1.5px rgba(15, 17, 22, 0.85),
+    0 0 7px rgba(255, 199, 65, 0.42);
+  transform: translate(-50%, -50%);
+  transition:
+    width 120ms ease,
+    height 120ms ease,
+    background 120ms ease,
+    box-shadow 120ms ease,
+    opacity 120ms ease;
+}
+
+.gtc-marker--group .gtc-marker__dot {
+  width: 13.5px;
+  height: 13.5px;
+  background: radial-gradient(circle at 35% 30%, #fff 0 16%, #ffd45e 42%, #e89a00 100%);
+  box-shadow:
+    0 0 0 1.5px rgba(15, 17, 22, 0.9),
+    0 0 0 3px rgba(255, 204, 77, 0.2),
+    0 0 9px rgba(255, 199, 65, 0.5);
+}
+
+.gtc-marker__count {
+  position: absolute;
+  top: -10.5px;
+  left: 50%;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: #ffcc4d;
+  color: #17191f;
+  font: 700 12px/20px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-align: center;
+  letter-spacing: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.gtc-marker:hover .gtc-marker__dot,
+.gtc-marker:focus-visible .gtc-marker__dot {
+  width: 16.5px;
+  height: 16.5px;
+  background: radial-gradient(circle at 35% 30%, #fff 0 22%, #ffe28a 48%, #ffc22e 100%);
+  box-shadow:
+    0 0 0 2px rgba(15, 17, 22, 0.9),
+    0 0 0 4px rgba(255, 204, 77, 0.34),
+    0 0 12px rgba(255, 199, 65, 0.65);
+}
+
+.gtc-marker:focus {
+  outline: none;
+}
+
+.gtc-marker:focus-visible {
+  outline: 2px solid #ffcc4d;
+  outline-offset: 3px;
+}
+
+.gtc-marker.is-played .gtc-marker__dot {
+  background: #89909b;
+  box-shadow:
+    0 0 0 1.5px rgba(15, 17, 22, 0.7),
+    0 0 4px rgba(0, 0, 0, 0.2);
+  opacity: 0.62;
+}
+
+.gtc-marker.is-played:hover .gtc-marker__dot,
+.gtc-marker.is-played:focus-visible .gtc-marker__dot {
+  background: #ffd45e;
+  box-shadow:
+    0 0 0 2px rgba(15, 17, 22, 0.85),
+    0 0 0 4px rgba(255, 204, 77, 0.26),
+    0 0 10px rgba(255, 199, 65, 0.5);
+  opacity: 1;
+}
+
+.gtc-tooltip {
+  position: fixed;
+  z-index: 2147483647;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(420px, calc(100vw - 24px));
+  padding: 11px 14px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  background: rgba(19, 21, 27, 0.98);
+  color: #eef1f5;
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.52),
+    0 2px 8px rgba(0, 0, 0, 0.38);
+  /* 14px matches the official chapter title (GCORES body .875rem). */
+  font: 14px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  pointer-events: none !important;
+}
+
+.gtc-tooltip.is-visible {
+  opacity: 1;
+}
+
+.gtc-tooltip[hidden] {
+  display: none !important;
+}
+
+.gtc-tooltip__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.gtc-tooltip__time {
+  color: #ffd45e;
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.gtc-tooltip__badge {
+  padding: 1px 6px;
+  border: 1px solid rgba(255, 212, 94, 0.3);
+  border-radius: 999px;
+  color: #d8dde5;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.gtc-tooltip__hint {
+  margin: 2px 0 6px;
+  color: #969eab;
+  font-size: 11px;
+}
+
+.gtc-tooltip__list {
+  max-height: 244px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+.gtc-tooltip__entry {
+  padding: 7px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gtc-tooltip__entry:first-child {
+  border-top: 0;
+  padding-top: 4px;
+}
+
+.gtc-tooltip__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.gtc-tooltip__entry-time {
+  color: #b8c0cb;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gtc-tooltip__kind {
+  min-width: 0;
+  overflow: hidden;
+  color: #8b94a2;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gtc-tooltip__title {
+  margin-bottom: 1px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.gtc-tooltip__content {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #d8dde5;
+  white-space: pre-wrap;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.gtc-tooltip__more {
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #969eab;
+  font-size: 11px;
+}
+
+.gtc-tooltip__foot {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #7f8895;
+  font-size: 11px;
+}
+
+.gtc-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  z-index: 2147483647;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(440px, calc(100vw - 32px));
+  padding: 9px 10px 9px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 9px;
+  background: rgba(24, 27, 34, 0.98);
+  color: #e9edf2;
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.42),
+    0 1px 4px rgba(0, 0, 0, 0.32);
+  font: 12px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  transform: translateX(-50%);
+}
+
+.gtc-toast[hidden] {
+  display: none !important;
+}
+
+.gtc-toast--error {
+  border-color: rgba(255, 116, 116, 0.45);
+}
+
+.gtc-toast__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.gtc-toast__action {
+  flex: none;
+  padding: 3px 9px;
+  border: 0;
+  border-radius: 6px;
+  background: #ffcc4d;
+  color: #17191f;
+  font: 700 11px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  cursor: pointer;
+}
+
+.gtc-toast__action:hover {
+  background: #ffd96f;
+}
+
+.gtc-toast__action:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gtc-marker__dot,
+  .gtc-tooltip {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .gtc-marker {
+    width: 33px;
+    height: 33px;
+  }
+
+  .gtc-tooltip {
+    max-width: calc(100vw - 16px);
+  }
+}
